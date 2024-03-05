@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('tittle');
             $table->string('description');
             $table->string('state');
-            $table->string('employer_id');
+            $table->foreignId('employer_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

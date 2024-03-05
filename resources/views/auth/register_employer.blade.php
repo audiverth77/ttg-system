@@ -51,10 +51,10 @@
                 <x-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" required />
             </div>
 
-            <div class="mt-4">
+            <!-- <div class="mt-4">
                 <x-label for="profile_photo_path" value="{{ __('Foto de perfil o logo (Opcional)') }}" />
                 <x-input id="profile_photo_path" class="block mt-1 w-full" type="file" name="profile_photo_path" />
-            </div>
+            </div> -->
 
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                 <div class="mt-4">
