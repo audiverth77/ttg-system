@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\JobController;
+use App\Livewire\JobsList;
 use Illuminate\Http\Request;
 use Inertial\Inertial;
 
@@ -43,6 +44,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth:sanctum', 'check.role:empleador', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/employer/dashboard', [JobController::class, 'index'])->name('employer.dashboard');
+    Route::get('/mis-ofertas', JobsList::class)->name('jobs.list');
     Route::resource('jobs', JobController::class);
 });
 
