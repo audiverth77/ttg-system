@@ -15,6 +15,8 @@ class Job extends Model
         'tittle',
         'description',
         'state', 
+        'location', 
+        'salary', 
     ];
 
     

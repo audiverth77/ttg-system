@@ -21,6 +21,10 @@
                     <x-nav-link href="{{ route('jobs.list') }}" :active="request()->routeIs('jobs.list')">
                         Mis ofertas
                     </x-nav-link>
+
+                    <x-nav-link href="{{ route('applcations.list') }}" :active="request()->routeIs('applcations.list')">
+                        Aplicaciones ofertas
+                    </x-nav-link>
                     @endif
                     @endauth
                 </div>
