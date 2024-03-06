@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\JobController;
 use Illuminate\Http\Request;
+use Inertial\Inertial;
 
 
 /*
