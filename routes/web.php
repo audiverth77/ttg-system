@@ -27,10 +27,16 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/register/employer', [UserController::class, 'createEmployer'])->name('register.createEmployer');
     Route::get('/register/candidate', [UserController::class, 'viewCandidate'])->name('register.candidate');
 });
-Route::get('/dashboard', function (Request $request) {
-        $redirect_url = $request->user()->hasRole('candidato') ? '/candidate/dashboard' : "/employer/dashboard";
-        return redirect($redirect_url);
-    })->name('dashboard');
+
+Route::get('/dashboard', function () {
+    return view('dashboard'); 
+})->name('dashboard')->middleware(['auth', 'verified']);
+
+
+// Route::get('/dashboard', function (Request $request) {
+//         $redirect_url = $request->user()->hasRole('candidato') ? '/candidate/dashboard' : "/employer/dashboard";
+//         return redirect($redirect_url);
+//     })->name('dashboard');
 
 // Route::middleware(['auth:sanctum', 'check.role:candidato', config('jetstream.auth_session'), 'verified'])->group(function () {
 // });
