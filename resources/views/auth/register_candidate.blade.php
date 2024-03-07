@@ -48,7 +48,7 @@
 
             <div class="mt-4">
                 <x-label for="cv" value="{{ __('CV') }}" />
-                <x-input id="cv" class="block mt-1 w-full" type="file" name="cv" />
+                <x-input id="cv" class="block mt-1 w-full" type="file" name="cv" required/>
             </div>
 
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())

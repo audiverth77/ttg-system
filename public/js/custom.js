@@ -104,11 +104,11 @@ $(document).ready(function () {
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content'),
                     },
-                    success: function(response) {
+                    success: function (response) {
                         console.log(response.message);
                     },
-                    error: function(xhr, status, error) {
-                        console.error(error);                       
+                    error: function (xhr, status, error) {
+                        console.error(error);
                     }
                 });
             }
@@ -116,29 +116,6 @@ $(document).ready(function () {
 
     });
 
-    // +++ funcion para ver las postulaciones de candidatos +++++++++++++++++++++++++++++++++++++++++++++++++
-
-    // $('.ver-candidatos').click(function () {
-    //     var idJob = $(this).attr('data-id');
-    //     // console.log($('meta[name="csrf-token"]').attr('content'));
-    //     $.ajaxSetup({
-    //         headers: {
-    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //         }
-    //     });
-
-    //     $.ajax({
-    //         url: `/api/applications-job/${idJob}`,
-    //         type: 'GET',
-    //         dataType: 'json',
-    //         success: function (data) {
-    //             console.log(data[0]);
-    //         },
-    //         error: function (error) {
-    //             console.error("Ha ocurrido un error: ", error);
-    //         }
-    //     });
-    // });
 
     // FUNCIONES PARA EL CRUD MIS OFERTAS PARA EL ROL CANDIDATO -------------------------------------------------------->
     // +++ mostrar ofertas  ++++++++++++++++++++++++++++++++++++++++++
@@ -156,14 +133,14 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 console.log(data[0]);
-                var html = `<h2 class="text-2xl font-semibold mb-2"> ${data[0].tittle} </h2>`+
-                           `<p class="mb-4"><strong>Descripción:</strong> ${data[0].description}</p>`+
-                           `<p class="mb-4"><strong>Ubicación:</strong> ${data[0].location}</p>`+
-                           `<p class="mb-4"><strong>Salario:</strong> $${data[0].salary}</p>`;
-                
+                var html = `<h2 class="text-2xl font-semibold mb-2"> ${data[0].tittle} </h2>` +
+                    `<p class="mb-4"><strong>Descripción:</strong> ${data[0].description}</p>` +
+                    `<p class="mb-4"><strong>Ubicación:</strong> ${data[0].location}</p>` +
+                    `<p class="mb-4"><strong>Salario:</strong> $${data[0].salary}</p>`;
+
                 $('.detalles').html(html);
                 $('.aplica-candidato').attr('data-id', data[0].id);;
-                
+
             },
             error: function (error) {
                 console.error("Ha ocurrido un error: ", error);
@@ -174,7 +151,7 @@ $(document).ready(function () {
     // +++ aplicar a oferta +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     $('.aplica-candidato').click(function () {
         var idJob = $(this).attr('data-id');
-        console.log("id trabajo aplicado= "+ idJob);
+        console.log("id trabajo aplicado= " + idJob);
 
         $.ajaxSetup({
             headers: {
@@ -195,14 +172,56 @@ $(document).ready(function () {
                 Swal.fire({
                     icon: data.status,
                     title: data.message,
-                    text: 'Ahora el reclutador podra ver tu CV y pronto se pondra en contacto contigo.',
+                    text: 'el reclutador podra ver tu CV y pronto se pondra en contacto contigo.',
                     confirmButtonText: 'Aceptar'
-                  });
+                });
             },
             error: function (error) {
                 console.error("Ha ocurrido un error: ", error);
             }
         });
+    });
+
+
+
+    $(".abrir-modal-referencias").click(function () {
+        $.ajax({
+            url: "https://reqres.in/api/users/",
+            type: "GET",
+            success: function (response) {
+                // {id: 1, email: 'george.bluth@reqres.in', first_name: 'George', last_name: 'Bluth', avatar: 'https://reqres.in/img/faces/1-image.jpg'}
+                var referenciasHtml = '';
+                for (var i = 0; i < 2; i++) {
+                    var a = Math.floor(Math.random() * 6) + 1;
+                    var user = response.data[a];
+                    referenciasHtml += `
+                            <div class="mt-4">
+                                <div class="flex justify-center mb-4">
+                                    <img src="${user.avatar}" alt="Imagen del Usuario" class="rounded-full border-4 border-gray-300 h-32 w-32 object-cover">
+                                </div>
+
+                                <div class="text-sm text-gray-500">
+                                    <p class="mb-2" id="nombreReferencia"><strong>Nombre:</strong> ${user.first_name}</p>
+                                    <p class="mb-2" id="apellidoReferencia"><strong>Apellido:</strong> ${user.last_name}</p>
+                                    <p id="emailReferencia"><strong>Email:</strong> ${user.email}</p>
+                                </div>
+                            </div>`;
+                    console.log(referenciasHtml);
+                }
+
+                $('#user-info').html(referenciasHtml);
+
+                $('#modalReferencias').removeClass('hidden');
+            },
+            error: function (error) {
+                console.error("Ha ocurrido un error: ", error);
+            }
+        });
+
+    });
+
+    $("#cerrarModalReferencias").click(function () {
+        $('#modalReferencias').addClass('hidden');
     });
 
 
