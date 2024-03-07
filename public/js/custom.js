@@ -79,7 +79,6 @@ $(document).ready(function () {
             success: function (response) {
                 console.log("Se ejecutó correctamente la acción amiwo!");
                 $('#modalId').addClass('hidden');
-                $('#cont-ofertas').html(response);
             },
             error: function (xhr, status, error) {
                 console.error(error);

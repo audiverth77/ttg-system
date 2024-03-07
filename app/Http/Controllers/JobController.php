@@ -55,6 +55,7 @@ class JobController extends Controller
                 'salary' => $request->salary,
             ]);
 
+            // return response()->json(['message' => 'Oferta creada exitosamente']);
             return redirect()->route('jobs.list')->with('success', 'Job created successfully.');
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al crear la oferta: ' . $e->getMessage()], 500);
