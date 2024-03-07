@@ -35,6 +35,11 @@
                         </p>
                     </div>
                     <div class="flex gap-4 mt-4 justify-end">
+                        <a href="{{ route('applications.list', ['jobId' => $job->id]) }}">
+                            <button class=" ver-candidatos inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" >
+                                Ver Candidatos
+                            </button>
+                        </a>
                         <button id="abrirModalEditar" class="editar-oferta inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" data-id="{{ $job->id }}">
                             Editar
                         </button>
@@ -64,7 +69,7 @@
                             Gestión Ofertas
                         </h3>
 
-                        
+
                         <form id="createJobForm" class="mt-8" method="POST">
                             @csrf
 

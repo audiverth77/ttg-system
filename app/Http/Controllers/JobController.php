@@ -86,7 +86,7 @@ class JobController extends Controller
         try {
             $job = Job::findOrFail($id);
             $job->update($request->all());
-    
+
             return response()->json(['message' => 'Oferta actualizada con éxito', 'job' => $job]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al actualizar la oferta: ' . $e->getMessage()], 500);
@@ -106,4 +106,5 @@ class JobController extends Controller
             return response()->json(['error' => 'Error al eliminar la oferta: ' . $e->getMessage()], 500);
         }
     }
+
 }

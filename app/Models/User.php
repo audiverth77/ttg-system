@@ -77,6 +77,6 @@ class User extends Authenticatable implements MustVerifyEmailContract
      */
     public function applications_job()
     {
-        return $this->hasMany(Application_job::class);
+        return $this->hasMany(ApplicationJob::class);
     }
 }

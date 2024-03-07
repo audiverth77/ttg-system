@@ -77,7 +77,7 @@ $(document).ready(function () {
             method: 'POST', // Usa POST pero sobrescribe el método con _method para PUT
             data: formData,
             success: function (response) {
-                console.log("Se ejecutó correctamente la acción amiwo!");
+                console.log("Se ejecutó correctamente la acción");
                 $('#modalId').addClass('hidden');
             },
             error: function (xhr, status, error) {
@@ -115,4 +115,96 @@ $(document).ready(function () {
         });
 
     });
+
+    // +++ funcion para ver las postulaciones de candidatos +++++++++++++++++++++++++++++++++++++++++++++++++
+
+    // $('.ver-candidatos').click(function () {
+    //     var idJob = $(this).attr('data-id');
+    //     // console.log($('meta[name="csrf-token"]').attr('content'));
+    //     $.ajaxSetup({
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         }
+    //     });
+
+    //     $.ajax({
+    //         url: `/api/applications-job/${idJob}`,
+    //         type: 'GET',
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             console.log(data[0]);
+    //         },
+    //         error: function (error) {
+    //             console.error("Ha ocurrido un error: ", error);
+    //         }
+    //     });
+    // });
+
+    // FUNCIONES PARA EL CRUD MIS OFERTAS PARA EL ROL CANDIDATO -------------------------------------------------------->
+    // +++ mostrar ofertas  ++++++++++++++++++++++++++++++++++++++++++
+    $('.ver-oferta').click(function () {
+        var idJob = $(this).data('id');
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            url: `/api/jobs/${idJob}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data[0]);
+                var html = `<h2 class="text-2xl font-semibold mb-2"> ${data[0].tittle} </h2>`+
+                           `<p class="mb-4"><strong>Descripción:</strong> ${data[0].description}</p>`+
+                           `<p class="mb-4"><strong>Ubicación:</strong> ${data[0].location}</p>`+
+                           `<p class="mb-4"><strong>Salario:</strong> $${data[0].salary}</p>`;
+                
+                $('.detalles').html(html);
+                $('.aplica-candidato').attr('data-id', data[0].id);;
+                
+            },
+            error: function (error) {
+                console.error("Ha ocurrido un error: ", error);
+            }
+        });
+    });
+
+    // +++ aplicar a oferta +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    $('.aplica-candidato').click(function () {
+        var idJob = $(this).attr('data-id');
+        console.log("id trabajo aplicado= "+ idJob);
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            url: `/application-job`,
+            type: 'POST',
+            data: {
+                job_id: idJob,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                Swal.fire({
+                    icon: data.status,
+                    title: data.message,
+                    text: 'Ahora el reclutador podra ver tu CV y pronto se pondra en contacto contigo.',
+                    confirmButtonText: 'Aceptar'
+                  });
+            },
+            error: function (error) {
+                console.error("Ha ocurrido un error: ", error);
+            }
+        });
+    });
+
+
+
 });

@@ -51,11 +51,6 @@
                 <x-input id="cv" class="block mt-1 w-full" type="file" name="cv" />
             </div>
 
-            <div class="mt-4">
-                <x-label for="profile_photo_path" value="{{ __('Foto de perfil') }}" />
-                <x-input id="profile_photo_path" class="block mt-1 w-full" type="file" name="profile_photo_path" />
-            </div>
-
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                 <div class="mt-4">
                     <x-label for="terms">
