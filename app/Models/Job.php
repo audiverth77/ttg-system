@@ -17,6 +17,7 @@ class Job extends Model
         'state', 
         'location', 
         'salary', 
+        'employer_id'
     ];
 
     

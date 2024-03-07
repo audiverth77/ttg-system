@@ -5,22 +5,6 @@
         </x-slot>
 
         <x-validation-errors class="mb-4" />
-        @if(session('success'))
-        <script>
-            window.addEventListener('load', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Éxito!',
-                    text: '{{ session( "success ") }}',
-                    confirmButtonText: 'OK'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location = '/login';
-                    }
-                });
-            });
-        </script>
-        @endif
 
         @if (session('status'))
         <div class="mb-4 font-medium text-sm text-green-600">

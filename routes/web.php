@@ -35,19 +35,17 @@ Route::get('/dashboard', function () {
 })->name('dashboard')->middleware(['auth', 'verified']);
 
 
-// Route::get('/dashboard', function (Request $request) {
-//         $redirect_url = $request->user()->hasRole('candidato') ? '/candidate/dashboard' : "/employer/dashboard";
-//         return redirect($redirect_url);
-//     })->name('dashboard');
+Route::middleware(['auth', 'check.role:empleador', config('jetstream.auth_session'), 'verified'])->group(function () {
 
-// Route::middleware(['auth:sanctum', 'check.role:candidato', config('jetstream.auth_session'), 'verified'])->group(function () {
-// });
-
-Route::middleware(['auth:sanctum', 'check.role:empleador', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/employer/dashboard', [JobController::class, 'index'])->name('employer.dashboard');
     Route::get('/mis-ofertas', JobsList::class)->name('jobs.list');
     Route::get('/mis-aplicaciones', ApplicationsList::class)->name('applcations.list');
-    Route::resource('jobs', JobController::class);
+
+    // Route::post('/jobs', JobController::class )->name('jobs.store');
+    Route::post('/jobs', [JobController::class, 'store'])->name('post.store');
+    Route::put('/jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
+    Route::resource('/jobs', JobController::class);
+    
 });
 
 Route::middleware(['auth', 'check.role:empleador'])->group(function () {

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\JobController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+// Rutas para los Trabajos
+Route::get('/jobs/{id}', [JobController::class, 'edit'])->name('jobs.edit');
+Route::put('/jobs/{id}', [JobController::class, 'update']);
