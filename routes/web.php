@@ -4,6 +4,7 @@ use App\Http\Controllers\ApplicationJobController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\JobController;
+use App\Livewire\ApplicationCandidateList;
 use App\Livewire\JobsList;
 use App\Livewire\JobsListCandidate;
 use App\Livewire\ApplicationsList;
@@ -55,6 +56,8 @@ Route::middleware(['auth', 'check.role:empleador', config('jetstream.auth_sessio
 Route::middleware(['auth', 'check.role:candidato'])->group(function () {
     
     // +++ RUTAS OFERTAS CANDIDATO +++++++++++++++++++++++++++++++++++++++++
+    Route::get('/mis-aplicaciones', ApplicationCandidateList::class)->name('application.candidate.list');
     Route::get('/ofertas-candidato', JobsListCandidate::class)->name('jobs.list.candidate');
     Route::post('/application-job', [ApplicationJobController::class, 'store'])->name('application-job.store');
+    Route::delete('/application-job/{id}', [ApplicationJobController::class, 'destroy'])->name('application-job.destroy');
 });

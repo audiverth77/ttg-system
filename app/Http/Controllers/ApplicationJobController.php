@@ -86,6 +86,14 @@ class ApplicationJobController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $user = auth()->user();
+            $user->applications()->detach($id);
+            // $applications = ApplicationJob::findOrFail($id);
+            // $applications->delete();
+            return response()->json(['message' => 'Tu postulacion se elimino correctamente']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al eliminar la oferta: ' . $e->getMessage()], 500);
+        }
     }
 }

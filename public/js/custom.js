@@ -59,7 +59,6 @@ $(document).ready(function () {
         var url = isUpdate ? `/jobs/${jobId}` : '/jobs';
         var formData = $(this).serialize();
 
-        // Agregar el campo _method a formData si isUpdate es true
         if (isUpdate) {
             formData += '&_method=PUT';
         }
@@ -74,18 +73,33 @@ $(document).ready(function () {
 
         $.ajax({
             url: url,
-            method: 'POST', // Usa POST pero sobrescribe el método con _method para PUT
+            method: 'POST', 
             data: formData,
             success: function (response) {
                 console.log("Se ejecutó correctamente la acción");
                 $('#modalId').addClass('hidden');
+                Swal.fire({
+                    title: 'Guardado',
+                    text: 'Se ejecutó correctamente la acción',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
             },
             error: function (xhr, status, error) {
                 console.error(error);
             }
         });
     });
+// +++ Eliminar oferta seleccionada ++++++++++++++++++++++++++++++++++++++++++
 
+/**
+ * Se manejo asincronismo para el envio de datos pero no para la actualización de las cards 
+ * debido a la falta de tiempo.
+ */
     $('.borrar-oferta').click(function () {
         var jobId = $(this).data('id');
         swal.fire({
@@ -106,6 +120,16 @@ $(document).ready(function () {
                     },
                     success: function (response) {
                         console.log(response.message);
+                        Swal.fire({
+                            title: 'Guardado',
+                            text: 'Se ejecutó correctamente la acción',
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
@@ -114,6 +138,47 @@ $(document).ready(function () {
             }
         });
 
+    });
+
+    //  +++ abrir modal referencias para observar als referencias traidas de la api ++++++++++++++++++++++++++++++++++++
+    $(".abrir-modal-referencias").click(function () {
+        $.ajax({
+            url: "https://reqres.in/api/users/",
+            type: "GET",
+            success: function (response) {
+                // {id: 1, email: 'george.bluth@reqres.in', first_name: 'George', last_name: 'Bluth', avatar: 'https://reqres.in/img/faces/1-image.jpg'}
+                var referenciasHtml = '';
+                for (var i = 0; i < 2; i++) {
+                    var a = Math.floor(Math.random() * 6) + 1;
+                    var user = response.data[a];
+                    referenciasHtml += `
+                            <div class="mt-4">
+                                <div class="flex justify-center mb-4">
+                                    <img src="${user.avatar}" alt="Imagen del Usuario" class="rounded-full border-4 border-gray-300 h-32 w-32 object-cover">
+                                </div>
+
+                                <div class="text-sm text-gray-500">
+                                    <p class="mb-2" id="nombreReferencia"><strong>Nombre:</strong> ${user.first_name}</p>
+                                    <p class="mb-2" id="apellidoReferencia"><strong>Apellido:</strong> ${user.last_name}</p>
+                                    <p id="emailReferencia"><strong>Email:</strong> ${user.email}</p>
+                                </div>
+                            </div>`;
+                    console.log(referenciasHtml);
+                }
+
+                $('#user-info').html(referenciasHtml);
+
+                $('#modalReferencias').removeClass('hidden');
+            },
+            error: function (error) {
+                console.error("Ha ocurrido un error: ", error);
+            }
+        });
+
+    });
+
+    $("#cerrarModalReferencias").click(function () {
+        $('#modalReferencias').addClass('hidden');
     });
 
 
@@ -183,47 +248,47 @@ $(document).ready(function () {
     });
 
 
+    // +++ eliminar mi postulación como candidato +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    $(".abrir-modal-referencias").click(function () {
-        $.ajax({
-            url: "https://reqres.in/api/users/",
-            type: "GET",
-            success: function (response) {
-                // {id: 1, email: 'george.bluth@reqres.in', first_name: 'George', last_name: 'Bluth', avatar: 'https://reqres.in/img/faces/1-image.jpg'}
-                var referenciasHtml = '';
-                for (var i = 0; i < 2; i++) {
-                    var a = Math.floor(Math.random() * 6) + 1;
-                    var user = response.data[a];
-                    referenciasHtml += `
-                            <div class="mt-4">
-                                <div class="flex justify-center mb-4">
-                                    <img src="${user.avatar}" alt="Imagen del Usuario" class="rounded-full border-4 border-gray-300 h-32 w-32 object-cover">
-                                </div>
-
-                                <div class="text-sm text-gray-500">
-                                    <p class="mb-2" id="nombreReferencia"><strong>Nombre:</strong> ${user.first_name}</p>
-                                    <p class="mb-2" id="apellidoReferencia"><strong>Apellido:</strong> ${user.last_name}</p>
-                                    <p id="emailReferencia"><strong>Email:</strong> ${user.email}</p>
-                                </div>
-                            </div>`;
-                    console.log(referenciasHtml);
-                }
-
-                $('#user-info').html(referenciasHtml);
-
-                $('#modalReferencias').removeClass('hidden');
-            },
-            error: function (error) {
-                console.error("Ha ocurrido un error: ", error);
+    $('.eliminar-postulacion').click(function () {
+        var aplicationId = $(this).data('id');
+        console.log(aplicationId);
+        swal.fire({
+            title: '¿Seguro que desea eliminar la postulación?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: '¡Si, eliminar!'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: '/application-job/' + aplicationId,
+                    type: 'DELETE',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    success: function (response) {
+                        console.log(response.message);
+                        Swal.fire({
+                            title: 'Eliminado',
+                            text: 'Se ejecutó correctamente la acción',
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
             }
         });
 
     });
-
-    $("#cerrarModalReferencias").click(function () {
-        $('#modalReferencias').addClass('hidden');
-    });
-
-
 
 });

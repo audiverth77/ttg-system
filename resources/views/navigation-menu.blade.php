@@ -27,7 +27,7 @@
                         Ofertas
                     </x-nav-link>
 
-                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('applcations.list')">
+                    <x-nav-link href="{{ route('application.candidate.list') }}" :active="request()->routeIs('applcations.list')">
                         Mis aplicaciones
                     </x-nav-link>
                     @endif

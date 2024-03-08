@@ -26,7 +26,7 @@
         </p>
 
         <p class="mt-4 text-sm">
-            <a href="https://laravel.com/docs" class="inline-flex items-center font-semibold text-indigo-700">
+            <a href="{{ route('jobs.list.candidate') }}" class="inline-flex items-center font-semibold text-indigo-700">
                 Ver ofertas de trabajo
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500">
@@ -51,7 +51,7 @@
         </p>
 
         <p class="mt-4 text-sm">
-            <a href="https://laracasts.com" class="inline-flex items-center font-semibold text-indigo-700">
+            <a href="{{ route('application.candidate.list') }}" class="inline-flex items-center font-semibold text-indigo-700">
                 Ver mis aplicaciones
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500">
