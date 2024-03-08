@@ -36,16 +36,13 @@ class JobController extends Controller
                 'description' => 'required|string',
                 'state' => 'required|string|max:255',
                 'location' => 'required|string|max:255',
-                // 'state' => 'required|in:disponible,cerrado',
-                // 'location' => 'required|in:remoto,presencial',
-                'salary' => 'required|string|max:255',
+                'salary' => 'required|numeric|max:100000000',
             ]);
 
             if (!auth()->check()) {
                 return redirect()->route('login')->with('error', 'Debe estar autenticado para crear una oferta.');
             }
 
-            // dd($employer);
             $job = Job::create([
                 'tittle' => $request->tittle,
                 'description' => $request->description,
@@ -55,7 +52,6 @@ class JobController extends Controller
                 'salary' => $request->salary,
             ]);
 
-            // return response()->json(['message' => 'Oferta creada exitosamente']);
             return redirect()->route('jobs.list')->with('success', 'Job created successfully.');
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al crear la oferta: ' . $e->getMessage()], 500);

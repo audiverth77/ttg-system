@@ -25,7 +25,7 @@
                             {{ $job->description }}
                         </p>
                         <p class="mt-2 text-gray-500 text-sm">
-                            Estado: {{ $job->state }}
+                            Estado: {{ $job->state == 1 ? 'Disponible' : 'Cerrado' }}
                         </p>
                         <p class="text-gray-500 text-sm">
                             Ubicación: {{ $job->location }}
@@ -40,12 +40,16 @@
                                 Ver Candidatos
                             </button>
                         </a>
+                        <div>
                         <button id="abrirModalEditar" class="editar-oferta inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" data-id="{{ $job->id }}">
                             Editar
                         </button>
+                        </div>
+                        <div>
                         <button class="borrar-oferta inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 focus:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" data-id="{{ $job->id }}">
                             Eliminar
                         </button>
+                        </div>
                     </div>
                 </div>
                 @endforeach
@@ -96,7 +100,7 @@
 
                             <div class="mb-4">
                                 <label for="state" class="block text-sm font-medium text-gray-700">Ubicación</label>
-                                <select name="location" id="state" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                                <select name="location" id="location" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
                                     <option value="" disabled="disabled" selected="selected">Seleccione...</option>
                                     <option value="remoto">Remoto</option>
                                     <option value="presencial">Presencial</option>

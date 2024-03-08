@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('jobs', function (Blueprint $table) {
             $table->string('location')->nullable();
-            $table->decimal('salary', 8, 2)->nullable();
+            $table->integer('salary')->nullable();
         });
     }
 
