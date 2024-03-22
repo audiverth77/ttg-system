@@ -1,24 +1,30 @@
 <?php
 
 namespace App\Livewire;
+
+use App\Models\Job;
 use Livewire\Component;
-use App\Models\ApplicationJob;
 
 class ApplicationsList extends Component
 {
-    public $jobs;
+    /**
+     * Id of the job.
+     */
+    public int $id;
 
-    public function mount($jobId = null)
-    {
-        $this->jobs = ApplicationJob::with(['user', 'job'])
-                                ->when($jobId, function($query) use ($jobId) {
-                                    return $query->where('job_id', $jobId);
-                                })
-                                ->get();
-    }
+    /**
+     * The candidates for the job.
+     */
+    public $candidates = [];
 
-    public function render()
+    /**
+     * Mount the component.
+     * @param Job $job
+     * @return void
+     */
+    public function mount(Job $job)
     {
-        return view('livewire.applications-list')->layout('layouts.app');
+        $this->fill($job->toArray());
+        $this->candidates = $job->candidates;
     }
 }

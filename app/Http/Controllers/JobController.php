@@ -13,16 +13,11 @@ class JobController extends Controller
      */
     public function index()
     {
-        $jobs = Job::where('employer_id', auth()->id())->get();
-        return view('employer.dashboard', compact('jobs'));
-    }
+        $user = auth()->user();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('employer.dashboard', [
+            'jobs' => $user->jobs
+        ]);
     }
 
     /**
@@ -39,11 +34,7 @@ class JobController extends Controller
                 'salary' => 'required|numeric|max:100000000',
             ]);
 
-            if (!auth()->check()) {
-                return redirect()->route('login')->with('error', 'Debe estar autenticado para crear una oferta.');
-            }
-
-            $job = Job::create([
+            Job::create([
                 'tittle' => $request->tittle,
                 'description' => $request->description,
                 'employer_id' => auth()->id(),
@@ -59,28 +50,19 @@ class JobController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function show(Job $job)
     {
-        return Job::where('id', $id)->get();
+        return $job;
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Job $job)
     {
         try {
-            $job = Job::findOrFail($id);
             $job->update($request->all());
 
             return response()->json(['message' => 'Oferta actualizada con éxito', 'job' => $job]);
@@ -92,15 +74,13 @@ class JobController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Job $job)
     {
         try {
-            $job = Job::findOrFail($id);
             $job->delete();
             return response()->json(['message' => 'Oferta eliminada exitosamente']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al eliminar la oferta: ' . $e->getMessage()], 500);
         }
     }
-
 }

@@ -2,27 +2,24 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Job;
+use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 
 class JobsList extends Component
 {
+    /**
+     * The jobs for the user.
+     * @var Job[]
+     */
     public $jobs;
 
+    /**
+     * Mount the component.
+     */
     public function mount()
     {
-        if (Auth::check()) {
-            
-            $this->jobs = Auth::user()->jobs()->get();
-        } else {
-            
-            $this->jobs = collect();
-        }
-    }
-
-    public function render()
-    {
-        return view('livewire.jobs-list', ['jobs' => $this->jobs])->layout('layouts.app');
+        $user = Auth::user();
+        $this->jobs = $user->jobs ?? [];
     }
 }

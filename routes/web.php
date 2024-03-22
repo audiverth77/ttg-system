@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ApplicationJobController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\JobController;
@@ -8,9 +7,6 @@ use App\Livewire\ApplicationCandidateList;
 use App\Livewire\JobsList;
 use App\Livewire\JobsListCandidate;
 use App\Livewire\ApplicationsList;
-use Livewire\Livewire;
-use Illuminate\Http\Request;
-use Inertial\Inertial;
 
 
 /*
@@ -38,26 +34,23 @@ Route::get('/dashboard', function () {
     return view('dashboard'); 
 })->name('dashboard')->middleware(['auth', 'verified']);
 
-
 Route::middleware(['auth', 'check.role:empleador', config('jetstream.auth_session'), 'verified'])->group(function () {
-
-    // +++ RUTAS OFERTAS EMPLEADOR ++++++++++++++++++++++++++
-    Route::get('/employer/dashboard', [JobController::class, 'index'])->name('employer.dashboard');
     Route::get('/mis-ofertas', JobsList::class)->name('jobs.list');
-    Route::get('/applications/{jobId}', ApplicationsList::class)->name('applications.list');
-    // Route::post('/jobs', JobController::class )->name('jobs.store');
+    Route::get('/applications/{job}', ApplicationsList::class)->name('applications.list');
+    
+    Route::get('/employer/dashboard', [JobController::class, 'index'])->name('employer.dashboard');
     Route::post('/jobs', [JobController::class, 'store'])->name('post.store');
     Route::put('/jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
-    Route::resource('/jobs', JobController::class);
-    Route::get('/employer/dashboard', [JobController::class, 'index'])->name('employer.dashboard');
-    
+    Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
 });
 
 Route::middleware(['auth', 'check.role:candidato'])->group(function () {
-    
-    // +++ RUTAS OFERTAS CANDIDATO +++++++++++++++++++++++++++++++++++++++++
     Route::get('/mis-aplicaciones', ApplicationCandidateList::class)->name('application.candidate.list');
     Route::get('/ofertas-candidato', JobsListCandidate::class)->name('jobs.list.candidate');
-    Route::post('/application-job', [ApplicationJobController::class, 'store'])->name('application-job.store');
-    Route::delete('/application-job/{id}', [ApplicationJobController::class, 'destroy'])->name('application-job.destroy');
+    Route::post('/apply/{job}' , [UserController::class, 'applyToJob'])->name('application.apply');
+    Route::delete('/withdraw-application/{id}', [UserController::class, 'withDrawApplication'])->name('application.withdraw');
 });
+
+// Rutas para los Trabajos
+Route::get('/jobs/{job}', [JobController::class, 'show'])->name('jobs.show');
+Route::put('/jobs/{job}', [JobController::class, 'update']);

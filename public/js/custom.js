@@ -1,8 +1,16 @@
 $(document).ready(function () {
 
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     // FUNCIONES PARA EL CRUD MIS OFERTAS PARA EL ROL EMPLEADOR -------------------------------------------------------->
 
-    // +++ apertura y cierre de mis modales propias ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /**
+     * Apertura y cierre de mis modales propias
+     */
     $("#abrirModal").click(function () {
         $('input[name="_method"]').val('POST');
         $('#modalId').removeClass('hidden');
@@ -10,37 +18,25 @@ $(document).ready(function () {
         $('#createJobForm').removeData('id');
     });
 
-    // $("#abrirModalEditar").click(function () {
-    //     $('#modalId').remove('hidden');
-    // });
-
     $("#cancelarModal").click(function () {
         $('#modalId').addClass('hidden');
     });
 
-    // +++ datos para modal editar +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /**
+     * Cargar datos para la moodal de edición de oferta
+     */
     $('.editar-oferta').click(function () {
-        $('input[name="_method"]').val('PUT');
-        var idJob = $(this).data('id');
-        // console.log($('meta[name="csrf-token"]').attr('content'));
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
+        const jobId = $(this).data('id');
+        
         $.ajax({
-            url: `/api/jobs/${idJob}`,
+            url: `/jobs/${jobId}`,
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                console.log(data[0]);
-                $('#jobId').val(data[0].id);
-                $('#tittle').val(data[0].tittle);
-                $('#description').val(data[0].description);
-                $('#state').val(data[0].state);
-                $('#location').val(data[0].location);
-                $('#salary').val(data[0].salary);
+                for (const field in data) {
+                    $(`#${field}`).val(data[field]);
+                }
+                
                 $('#modalId').removeClass('hidden');
             },
             error: function (error) {
@@ -49,8 +45,10 @@ $(document).ready(function () {
         });
     });
 
-    // +++ Función para la creación y edición de ofertas ++++++++++++++++++++++++++
-
+    
+    /**
+     * Función para la creación y edición de ofertas
+     */
     $('#createJobForm').submit(function (e) {
         e.preventDefault();
 
@@ -64,12 +62,6 @@ $(document).ready(function () {
         }
 
         console.log("id trabajo = " + isUpdate);
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
 
         $.ajax({
             url: url,
@@ -94,12 +86,12 @@ $(document).ready(function () {
             }
         });
     });
-// +++ Eliminar oferta seleccionada ++++++++++++++++++++++++++++++++++++++++++
 
-/**
- * Se manejo asincronismo para el envio de datos pero no para la actualización de las cards 
- * debido a la falta de tiempo.
- */
+    /**
+     * Eliminar oferta seleccionada
+     * Nota: Se manejo asincronismo para el envio de datos pero no para la actualización de las cards 
+     * debido a la falta de tiempo.
+     */
     $('.borrar-oferta').click(function () {
         var jobId = $(this).data('id');
         swal.fire({
@@ -113,11 +105,8 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    url: '/jobs/' + jobId,
+                    url: `/jobs/${jobId}`,
                     type: 'DELETE',
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                    },
                     success: function (response) {
                         console.log(response.message);
                         Swal.fire({
@@ -137,10 +126,11 @@ $(document).ready(function () {
                 });
             }
         });
-
     });
 
-    //  +++ abrir modal referencias para observar als referencias traidas de la api ++++++++++++++++++++++++++++++++++++
+    /**
+     * Abrir modal referencias para observar als referencias traidas de la api
+     */
     $(".abrir-modal-referencias").click(function () {
         $.ajax({
             url: "https://reqres.in/api/users/",
@@ -174,7 +164,6 @@ $(document).ready(function () {
                 console.error("Ha ocurrido un error: ", error);
             }
         });
-
     });
 
     $("#cerrarModalReferencias").click(function () {
@@ -185,27 +174,21 @@ $(document).ready(function () {
     // FUNCIONES PARA EL CRUD MIS OFERTAS PARA EL ROL CANDIDATO -------------------------------------------------------->
     // +++ mostrar ofertas  ++++++++++++++++++++++++++++++++++++++++++
     $('.ver-oferta').click(function () {
-        var idJob = $(this).data('id');
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+        const jobId = $(this).data('id');
 
         $.ajax({
-            url: `/api/jobs/${idJob}`,
+            url: `/jobs/${jobId}`,
             type: 'GET',
             dataType: 'json',
             success: function (data) {
                 console.log(data[0]);
-                var html = `<h2 class="text-2xl font-semibold mb-2"> ${data[0].tittle} </h2>` +
-                    `<p class="mb-4"><strong>Descripción:</strong> ${data[0].description}</p>` +
-                    `<p class="mb-4"><strong>Ubicación:</strong> ${data[0].location}</p>` +
-                    `<p class="mb-4"><strong>Salario:</strong> $${data[0].salary}</p>`;
+                var html = `<h2 class="text-2xl font-semibold mb-2"> ${data.tittle} </h2>` +
+                    `<p class="mb-4"><strong>Descripción:</strong> ${data.description}</p>` +
+                    `<p class="mb-4"><strong>Ubicación:</strong> ${data.location}</p>` +
+                    `<p class="mb-4"><strong>Salario:</strong> $${data.salary}</p>`;
 
                 $('.detalles').html(html);
-                $('.aplica-candidato').attr('data-id', data[0].id);;
-
+                $('.aplica-candidato').attr('data-id', data.id);
             },
             error: function (error) {
                 console.error("Ha ocurrido un error: ", error);
@@ -215,29 +198,17 @@ $(document).ready(function () {
 
     // +++ aplicar a oferta +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     $('.aplica-candidato').click(function () {
-        var idJob = $(this).attr('data-id');
-        console.log("id trabajo aplicado= " + idJob);
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+        const jobId = $(this).attr('data-id');
 
         $.ajax({
-            url: `/application-job`,
+            url: `/apply/${jobId}`,
             type: 'POST',
-            data: {
-                job_id: idJob,
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            dataType: 'json',
             success: function (data) {
                 console.log(data);
                 Swal.fire({
                     icon: data.status,
                     title: data.message,
-                    text: 'el reclutador podra ver tu CV y pronto se pondra en contacto contigo.',
+                    text: 'El reclutador podra ver tu CV y pronto se pondra en contacto contigo.',
                     confirmButtonText: 'Aceptar'
                 });
             },
@@ -264,11 +235,8 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    url: '/application-job/' + aplicationId,
+                    url: `/withdraw-application/${aplicationId}`,
                     type: 'DELETE',
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                    },
                     success: function (response) {
                         console.log(response.message);
                         Swal.fire({
@@ -290,5 +258,4 @@ $(document).ready(function () {
         });
 
     });
-
 });

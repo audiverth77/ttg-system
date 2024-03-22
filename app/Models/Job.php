@@ -9,6 +9,9 @@ class Job extends Model
 {
     use HasFactory;
 
+    const STATE_ACTIVE = 1;
+    const STATE_INACTIVE = 0;
+
     protected $table = 'jobs';
 
     protected $fillable = [
@@ -20,14 +23,27 @@ class Job extends Model
         'employer_id'
     ];
 
-    
+    /**
+     * Get the user that owns the job.
+     */
     public function user()
     {
         return $this->belongsTo(User::class, 'employer_id'); 
     }
 
-    public function applicationJob()
+    /**
+     * Get the candidates that applied to the job.
+     */
+    public function candidates()
     {
-        return $this->hasMany(ApplicationJob::class);
+        return $this->belongsToMany(User::class, 'applications_job', 'job_id', 'candidate_id');
+    }
+
+    /**
+     * Active scope
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('state', self::STATE_ACTIVE);
     }
 }

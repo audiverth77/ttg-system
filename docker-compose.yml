@@ -4,6 +4,8 @@ networks:
 volumes:
     app-redis:
         driver: local
+    mailpit-data:
+        driver: local
 
 services:
     php:
@@ -34,7 +36,6 @@ services:
             - ./docker/nginx/:/etc/nginx/conf.d/
         networks:
             - app-network
-    
     redis:
         image: redis/redis-stack:latest
         restart: always
@@ -52,15 +53,32 @@ services:
                 - ping
             retries: 3
             timeout: 5s
-    
     db:
         image: mysql
         # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
         # (this is just an example, not intended to be a production configuration)
         command: --default-authentication-plugin=mysql_native_password
         restart: always
+        ports:
+            - "${DB_PORT:-3306}:3306"
         environment:
             MYSQL_ROOT_PASSWORD: example
+        networks:
+            - app-network
+    mailpit:
+        image: axllent/mailpit
+        container_name: mailpit
+        restart: always
+        volumes:
+            - mailpit-data:/data
+        ports:
+            - 8025:8025
+            - 1025:1025
+        environment:
+            MP_MAX_MESSAGES: 5000
+            MP_DATA_FILE: /data/mailpit.db
+            MP_SMTP_AUTH_ACCEPT_ANY: 1
+            MP_SMTP_AUTH_ALLOW_INSECURE: 1
         networks:
             - app-network
 

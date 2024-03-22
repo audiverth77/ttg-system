@@ -2,20 +2,22 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Job;
+use Livewire\Component;
 
 class JobsListCandidate extends Component
 {
+    /**
+     * The jobs for the user.
+     * @var Job[]
+     */
     public $jobs;
 
+    /**
+     * Mount the component.
+     */
     public function mount()
     {
-        $this->jobs = Job::where('state', 1)->get();
-    }
-
-    public function render()
-    {
-        return view('livewire.jobs-list-candidate', ['jobs' => $this->jobs])->layout('layouts.app');
+        $this->jobs = Job::active()->get();
     }
 }
